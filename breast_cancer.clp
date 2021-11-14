@@ -19,8 +19,8 @@
 (defrule ask-meanConcavePoints
     ?x <- (initial-fact)
     =>
-    (bind ?mcp (ask-question "mean_concave_points ? ")) 
-    (assert (mean_concave_points ?mcp))
+    (bind ?mean_concave_points (ask-question "mean_concave_points ? ")) 
+    (assert (mean_concave_points ?mean_concave_points))
 )
 
 (defrule ask-perimeterError
@@ -40,8 +40,8 @@
 (defrule ask-meanTexture
     ?x <- (initial-fact)
     =>
-    (bind ?meanTexture (ask-question "meanTexture ? ")) 
-    (assert (meanTexture ?meanTexture))
+    (bind ?mean_texture (ask-question "meanTexture ? ")) 
+    (assert (mean_texture ?mean_texture))
 )
 
 (defrule ask-concavePointsError
@@ -68,8 +68,8 @@
 (defrule ask-worstRadius
     ?x <- (initial-fact)
     =>
-    (bind ?worstRadius (ask-question "worstRadius ? ")) 
-    (assert (worstRadius ?worstRadius))
+    (bind ?worst_radius (ask-question "worstRadius ? ")) 
+    (assert (worst_radius ?worst_radius))
 )
 
 (defrule ask-worstArea
@@ -99,5 +99,89 @@
     (retract ?x)
     (bind ?worst_concave_points (ask-question "worst_concave_points ? ")) 
     (assert (worst_concave_points ?worst_concave_points))
+    (assert (filterBy mean_concave_points))
 )
 
+;;; Rules to process facts of parameters from the user
+
+(defrule filterBy-meanConcavePoints
+    (mean_concave_points ?mcp)
+    (filterBy mean_concave_points)
+    =>
+    (if (> ?mcp 0.05) 
+        then (assert (filterBy worst_perimeter))
+    else (assert(filterBy worst_radius))
+    )
+)
+
+(defrule filterBy-worstPerimeter
+    (worst_perimeter ?worst_perimeter)
+    (filterBy worst_perimeter)
+    =>
+    (if (> ?worst_perimeter 114.45)
+        then (assert (breast_cancer false))
+    else (assert(filterBy worst_texture_right))
+    ) 
+)
+
+(defrule filterBy-worstTexture-Right
+    (worst_texture ?worst_texture)
+    (filterBy worst_texture_right)
+    =>
+    (if (> ?worst_texture 25.65)
+        then (assert (filterBy perimeter_error))
+    else (assert (filterBy worst_concave_points))
+    )
+)
+
+(defrule filterBy-worstConcavePoints
+    (worst_concave_points ?worst_concave_points)
+    (filterBy worst_concave_points)
+    =>
+    (if (> ?worst_concave_points 0.17)
+        then (assert (breast_cancer false))
+    else (assert (breast_cancer true))
+    )
+)
+
+(defrule filterBy-perimeterError
+    (perimeter_error ?perimeter_error)
+    (filterBy perimeter_error)
+    =>
+    (if (> ?perimeter_error 1.56)
+        then (assert (breast_cancer false))
+    else (assert (filterBy mean_radius_right))
+    )
+)
+
+(defrule filterBy-meanRadius-Right
+    (mean_radius ?mean_radius)
+    (filterBy mean_radius_right)
+    =>
+    (if (> ?mean_radius 13.34)
+        then (assert (breast_cancer true))
+    else (assert (breast_cancer false))
+    )
+)
+
+(defrule cancerDetected
+    (breast_cancer true)
+    =>
+    (retract *)
+	(printout t "*****************************" crlf)
+	(printout t "* We are sorry for your loss!" crlf)
+	(printout t "* We detected a breast cancer" crlf)
+	(printout t "* Stop nubes and go rest pls!" crlf)
+	(printout t "*****************************" crlf)
+)
+
+(defrule cancerNotDetected
+    (breast_cancer false)
+    =>
+    (retract *)
+	(printout t "*****************************" crlf)
+	(printout t "* Here's a good news for you!" crlf)
+	(printout t "* Detected no breast cancer!!" crlf)
+	(printout t "* Even so, stop nubes please!" crlf)
+	(printout t "*****************************" crlf)
+)

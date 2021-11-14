@@ -120,7 +120,98 @@
     =>
     (if (> ?worst_perimeter 114.45)
         then (assert (breast_cancer false))
-    else (assert(filterBy worst_texture_right))
+    else (assert (filterBy worst_texture_right))
+    ) 
+)
+
+(defrule filterBy-worstRadius
+    (worst_radius ?worst_radius)
+    (filterBy worst_radius)
+    =>
+    (if (> ?worst_radius 16.83)
+        then (assert (filterBy radius_error))
+    else (assert (filterBy mean_texture_up))
+    ) 
+)
+
+(defrule filterBy-radiusError
+    (radius_error ?radius_error)
+    (filterBy radius_error)
+    =>
+    (if (> ?radius_error 0.63)
+        then (assert (filterBy mean_smoothness))
+    else (assert (filterBy worst_texture_left))
+    ) 
+)
+
+(defrule filterBy-meanTexture-Up
+    (mean_texture ?mean_texture
+    (filterBy mean_texture_up)
+    =>
+    (if (> ?mean_texture 16.19)
+        then (assert (filterBy concave_points_error))
+    else (assert (breast_cancer true))
+    ) 
+)
+
+(defrule filterBy-worstTexture-Left
+    (worst_texture ?worst_texture)
+    (filterBy worst_texture_left)
+    =>
+    (if (> ?worst_texture 30.15)
+        then (assert (filterBy worst_area))
+    else (assert (breast_cancer true))
+    ) 
+)
+
+(defrule filterBy-meanSmoothness
+    (mean_smoothness ?mean_smoothness)
+    (filterBy mean_smoothness)
+    =>
+    (if (> ?mean_smoothness 0.09)
+        then (assert (breast_cancer false))
+    else (assert (breast_cancer true))
+    ) 
+)
+
+(defrule filterBy-concavePointsError
+    (concave_points_error ?concave_points_error)
+    (filterBy concave_points_error)
+    =>
+    (if (> ?concave_points_error 0.01)
+        then (assert (breast_cancer true))
+    else (assert (breast_cancer false))
+    ) 
+)
+
+
+(defrule filterBy-worstArea
+    (worst_area ?worst_area)
+    (filterBy worst_area)
+    =>
+    (if (> ?worst_area 641.60)
+        then (assert (filterBy mean_radius_left))
+    else (assert (breast_cancer true))
+    ) 
+)
+
+(defrule filterBy-meanRadius-Left
+    (mean_radius ?mean_radius)
+    (filterBy mean_radius_left)
+    =>
+    (if (> ?mean_radius 13.45)
+        then (assert (breast_cancer true))
+    else (assert (filterBy mean_texture_bottom))
+    ) 
+)
+
+(defrule filterBy-meanTexture-Bottom
+    (mean_texture ?mean_texture)
+    (filterBy mean_texture_bottom)
+    =>
+    (if (> ?mean_texture 28.79)
+        then (assert (breast_cancer true))
+    else (assert (breast_cancer false))
     ) 
 )
 

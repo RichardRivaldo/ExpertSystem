@@ -1,3 +1,8 @@
+;;; salamdaribinjAI
+
+;;;-----------------------------------------------------------------------------------
+;;;------------------------------------QUESTIONS--------------------------------------
+;;;-----------------------------------------------------------------------------------
 ;;; Rule to ask questions regarding attributes that the Expert System needs
 ;;; All questions should be answered with numbers
 (deffunction ask-question (?Attribute)
@@ -40,7 +45,7 @@
 (defrule ask-meanTexture
     ?x <- (initial-fact)
     =>
-    (bind ?mean_texture (ask-question "meanTexture ? ")) 
+    (bind ?mean_texture (ask-question "mean_texture ? ")) 
     (assert (mean_texture ?mean_texture))
 )
 
@@ -58,17 +63,17 @@
     (assert (radius_error ?radius_error))
 )
 
-(defrule ask-mainSmoothness
+(defrule ask-meanSmoothness
     ?x <- (initial-fact)
     =>
-    (bind ?main_smoothness (ask-question "main_smoothness ? ")) 
-    (assert (main_smoothness ?main_smoothness))
+    (bind ?mean_smoothness (ask-question "mean_smoothness ? ")) 
+    (assert (mean_smoothness ?mean_smoothness))
 )
 
 (defrule ask-worstRadius
     ?x <- (initial-fact)
     =>
-    (bind ?worst_radius (ask-question "worstRadius ? ")) 
+    (bind ?worst_radius (ask-question "worst_radius ? ")) 
     (assert (worst_radius ?worst_radius))
 )
 
@@ -103,7 +108,9 @@
 )
 
 ;;; Rules to process facts of parameters from the user
-
+;;;-----------------------------------------------------------------------------------
+;;;-----------------------------------RIGHT TREE--------------------------------------
+;;;-----------------------------------------------------------------------------------
 (defrule filterBy-meanConcavePoints
     (mean_concave_points ?mcp)
     (filterBy mean_concave_points)
@@ -123,6 +130,50 @@
     else (assert (filterBy worst_texture_right))
     ) 
 )
+
+(defrule filterBy-worstTexture-Right
+    (worst_texture ?worst_texture)
+    (filterBy worst_texture_right)
+    =>
+    (if (> ?worst_texture 25.65)
+        then (assert (filterBy perimeter_error))
+    else (assert (filterBy worst_concave_points))
+    )
+)
+
+(defrule filterBy-worstConcavePoints
+    (worst_concave_points ?worst_concave_points)
+    (filterBy worst_concave_points)
+    =>
+    (if (> ?worst_concave_points 0.17)
+        then (assert (breast_cancer false))
+    else (assert (breast_cancer true))
+    )
+)
+
+(defrule filterBy-perimeterError
+    (perimeter_error ?perimeter_error)
+    (filterBy perimeter_error)
+    =>
+    (if (> ?perimeter_error 1.56)
+        then (assert (breast_cancer false))
+    else (assert (filterBy mean_radius_right))
+    )
+)
+
+(defrule filterBy-meanRadius-Right
+    (mean_radius ?mean_radius)
+    (filterBy mean_radius_right)
+    =>
+    (if (> ?mean_radius 13.34)
+        then (assert (breast_cancer true))
+    else (assert (breast_cancer false))
+    )
+)
+
+;;;-----------------------------------------------------------------------------------
+;;;------------------------------------LEFT TREE--------------------------------------
+;;;-----------------------------------------------------------------------------------
 
 (defrule filterBy-worstRadius
     (worst_radius ?worst_radius)
@@ -145,7 +196,7 @@
 )
 
 (defrule filterBy-meanTexture-Up
-    (mean_texture ?mean_texture
+    (mean_texture ?mean_texture)
     (filterBy mean_texture_up)
     =>
     (if (> ?mean_texture 16.19)
@@ -215,45 +266,9 @@
     ) 
 )
 
-(defrule filterBy-worstTexture-Right
-    (worst_texture ?worst_texture)
-    (filterBy worst_texture_right)
-    =>
-    (if (> ?worst_texture 25.65)
-        then (assert (filterBy perimeter_error))
-    else (assert (filterBy worst_concave_points))
-    )
-)
-
-(defrule filterBy-worstConcavePoints
-    (worst_concave_points ?worst_concave_points)
-    (filterBy worst_concave_points)
-    =>
-    (if (> ?worst_concave_points 0.17)
-        then (assert (breast_cancer false))
-    else (assert (breast_cancer true))
-    )
-)
-
-(defrule filterBy-perimeterError
-    (perimeter_error ?perimeter_error)
-    (filterBy perimeter_error)
-    =>
-    (if (> ?perimeter_error 1.56)
-        then (assert (breast_cancer false))
-    else (assert (filterBy mean_radius_right))
-    )
-)
-
-(defrule filterBy-meanRadius-Right
-    (mean_radius ?mean_radius)
-    (filterBy mean_radius_right)
-    =>
-    (if (> ?mean_radius 13.34)
-        then (assert (breast_cancer true))
-    else (assert (breast_cancer false))
-    )
-)
+;;;-----------------------------------------------------------------------------------
+;;;-------------------------------------OUTPUTS---------------------------------------
+;;;-----------------------------------------------------------------------------------
 
 (defrule cancerDetected
     (breast_cancer true)

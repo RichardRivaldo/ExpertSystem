@@ -180,8 +180,8 @@
     (filterBy worst_radius)
     =>
     (if (> ?worst_radius 16.83)
-        then (assert (filterBy radius_error))
-    else (assert (filterBy mean_texture_up))
+        then (assert (filterBy mean_texture_up))
+    else (assert (filterBy radius_error))
     ) 
 )
 
@@ -234,7 +234,6 @@
     else (assert (breast_cancer false))
     ) 
 )
-
 
 (defrule filterBy-worstArea
     (worst_area ?worst_area)
